@@ -72,6 +72,9 @@ extension VoiceMemoFolderViewController: VoiceMemoFolderProtocol {
     func didRightBarButtonAction() {
     }
     
+    /// 폴더 생성 액션
+    ///
+    /// - 참고링크: [https://developer.apple.com/forums/thread/126195](https://developer.apple.com/forums/thread/126195)
     func didFolderButtonAction() {
         alert = UIAlertController(title: "New Folder", message: "Enter a name for folder.", preferredStyle: .alert)
         alert?.addTextField {[weak self] textField in
@@ -85,7 +88,7 @@ extension VoiceMemoFolderViewController: VoiceMemoFolderProtocol {
             else {
                 return
             }
-            let newFolder = VoiceMemoFolderModel(image: UIImage(systemName: "folder"), title: title, count: "0")
+            let newFolder = VoiceMemoFolderModel(systemName: "folder", title: title, count: "0")
             self?.presenter.makeFolder(newFolder)
             self?.tableView.reloadData()
         }
@@ -105,6 +108,7 @@ extension VoiceMemoFolderViewController: VoiceMemoFolderProtocol {
         alert?.actions.last?.isEnabled = !(text?.isEmpty ?? true)
         
     }
+
 }
 
 private extension VoiceMemoFolderViewController {

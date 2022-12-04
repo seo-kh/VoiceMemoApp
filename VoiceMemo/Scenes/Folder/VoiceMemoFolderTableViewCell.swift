@@ -8,6 +8,9 @@
 import UIKit
 import SnapKit
 
+/// 음성 메모 커스텀 셀: UIListContentConfiguration사용
+///
+/// - 참고링크 : [https://developer.apple.com/documentation/uikit/uilistcontentconfiguration/3601052-valuecell](https://developer.apple.com/documentation/uikit/uilistcontentconfiguration/3601052-valuecell)
 final class VoiceMemoFolderTableViewCell: UITableViewCell {
     /// Identfier설정
     static let identifier = "VoiceMemoFolderTableViewCell"

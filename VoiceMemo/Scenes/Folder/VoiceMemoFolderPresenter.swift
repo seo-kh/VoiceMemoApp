@@ -19,15 +19,17 @@ protocol VoiceMemoFolderProtocol {
 final class VoiceMemoFolderPresenter: NSObject {
     private var viewController: VoiceMemoFolderProtocol?
     private let defaultFolders: [VoiceMemoFolderModel] = [
-        VoiceMemoFolderModel(image: .init(systemName: "waveform"), title: "All Recordings", count: "42"),
-        VoiceMemoFolderModel(image: .init(systemName: "applewatch"), title: "Watch Recordings", count: "4"),
-        VoiceMemoFolderModel(image: .init(systemName: "trash"), title: "Recently Deleted", count: "1"),
+        VoiceMemoFolderModel(systemName: "waveform", title: "All Recordings", count: "42"),
+        VoiceMemoFolderModel(systemName: "applewatch", title: "Watch Recordings", count: "4"),
+        VoiceMemoFolderModel(systemName: "trash", title: "Recently Deleted", count: "1"),
     ]
     
-    private var myFolders: [VoiceMemoFolderModel] = []
+    private var myFolders: [VoiceMemoFolderModel]
+    private let manager = UserDefaultsManager()
     
     init(viewController: VoiceMemoFolderProtocol) {
         self.viewController = viewController
+        self.myFolders = manager.getVoiceMemos()
     }
     
     func viewDidLoad() {
@@ -45,6 +47,8 @@ final class VoiceMemoFolderPresenter: NSObject {
     
     func makeFolder(_ newFolder: VoiceMemoFolderModel) {
         self.myFolders.append(newFolder)
+        self.manager.setVoiceMemos(myFolders)
+        self.myFolders = self.manager.getVoiceMemos()
     }
     
     func didTextChanged(_ text: String?) {
