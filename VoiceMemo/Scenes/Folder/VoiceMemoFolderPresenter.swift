@@ -12,15 +12,19 @@ protocol VoiceMemoFolderProtocol {
     func setupLayout()
     func didRightBarButtonAction()
     func pushRecordView(viewController: UIViewController)
+    func didFolderButtonAction()
+    func didTextChangedAction(_ text: String?)
 }
 
 final class VoiceMemoFolderPresenter: NSObject {
     private var viewController: VoiceMemoFolderProtocol?
-    private var folders: [VoiceMemoFolderModel] = [
+    private let defaultFolders: [VoiceMemoFolderModel] = [
         VoiceMemoFolderModel(image: .init(systemName: "waveform"), title: "All Recordings", count: "42"),
         VoiceMemoFolderModel(image: .init(systemName: "applewatch"), title: "Watch Recordings", count: "4"),
         VoiceMemoFolderModel(image: .init(systemName: "trash"), title: "Recently Deleted", count: "1"),
     ]
+    
+    private var myFolders: [VoiceMemoFolderModel] = []
     
     init(viewController: VoiceMemoFolderProtocol) {
         self.viewController = viewController
@@ -34,6 +38,18 @@ final class VoiceMemoFolderPresenter: NSObject {
     func didRightBarButtonTapped() {
         viewController?.didRightBarButtonAction()
     }
+    
+    func didFolderButtonTapped() {
+        viewController?.didFolderButtonAction()
+    }
+    
+    func makeFolder(_ newFolder: VoiceMemoFolderModel) {
+        self.myFolders.append(newFolder)
+    }
+    
+    func didTextChanged(_ text: String?) {
+        viewController?.didTextChangedAction(text)
+    }
 }
 
 extension VoiceMemoFolderPresenter: UITableViewDelegate {
@@ -46,18 +62,29 @@ extension VoiceMemoFolderPresenter: UITableViewDelegate {
 
 extension VoiceMemoFolderPresenter: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        1
+        2
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        folders.count
+        switch section {
+        case 0:
+            return defaultFolders.count
+        default:
+            return myFolders.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: VoiceMemoFolderTableViewCell.identifier, for: indexPath) as? VoiceMemoFolderTableViewCell
         
-        let folder = folders[indexPath.row]
-        cell?.setup(folder: folder)
+        switch indexPath.section {
+        case 0:
+            let folder = defaultFolders[indexPath.row]
+            cell?.setup(folder: folder)
+        default:
+            let folder = myFolders[indexPath.row]
+            cell?.setup(folder: folder)
+        }
         return cell ?? UITableViewCell()
     }
     
