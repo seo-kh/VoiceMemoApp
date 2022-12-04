@@ -16,6 +16,10 @@ protocol VoiceMemoFolderProtocol {
     func didTextChangedAction(_ text: String?)
 }
 
+protocol VoiceMemoFolderPresenterProtocol: AnyObject {
+    func isFolderExist(_ exist: Bool)
+}
+
 final class VoiceMemoFolderPresenter: NSObject {
     private var viewController: VoiceMemoFolderProtocol?
     private let defaultFolders: [VoiceMemoFolderModel] = [
@@ -23,8 +27,14 @@ final class VoiceMemoFolderPresenter: NSObject {
         VoiceMemoFolderModel(systemName: "applewatch", title: "Watch Recordings", count: "4"),
         VoiceMemoFolderModel(systemName: "trash", title: "Recently Deleted", count: "1"),
     ]
+    weak var delegate: VoiceMemoFolderPresenterProtocol?
     
-    private var myFolders: [VoiceMemoFolderModel]
+    private var myFolders: [VoiceMemoFolderModel] = [] {
+        didSet {
+            if myFolders.isEmpty { delegate?.isFolderExist(false) }
+            else { delegate?.isFolderExist(true) }
+        }
+    }
     private let manager = UserDefaultsManager()
     
     init(viewController: VoiceMemoFolderProtocol) {
@@ -61,6 +71,13 @@ extension VoiceMemoFolderPresenter: UITableViewDelegate {
         let vc = UIViewController()
         vc.view.backgroundColor = .cyan
         viewController?.pushRecordView(viewController: vc)
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 0: return nil
+        default: return myFolders.isEmpty ? "" : "My Folders"
+        }
     }
 }
 

@@ -39,6 +39,13 @@ final class VoiceMemoFolderViewController: UIViewController {
         super.viewDidLoad()
         
         presenter.viewDidLoad()
+        presenter.delegate = self
+    }
+}
+
+extension VoiceMemoFolderViewController: VoiceMemoFolderPresenterProtocol {
+    func isFolderExist(_ exist: Bool) {
+        navigationItem.rightBarButtonItem?.isEnabled = exist
     }
 }
 
@@ -47,7 +54,6 @@ extension VoiceMemoFolderViewController: VoiceMemoFolderProtocol {
         navigationItem.title = "Voice Memos"
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.rightBarButtonItem = rightBarButton
-        navigationItem.rightBarButtonItem?.isEnabled = false
     }
     
     func setupLayout() {
