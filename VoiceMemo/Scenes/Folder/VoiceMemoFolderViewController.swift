@@ -100,7 +100,7 @@ extension VoiceMemoFolderViewController: VoiceMemoFolderProtocol {
             }
             let newFolder = VoiceMemoFolderModel(systemName: "folder", title: title, count: "0")
             self?.presenter.makeFolder(newFolder)
-            self?.tableView.reloadData()
+            self?.tableView.reloadSections(IndexSet(integer: 1), with: .fade)
         }
         
         alert?.addAction(cancel)
@@ -119,8 +119,9 @@ extension VoiceMemoFolderViewController: VoiceMemoFolderProtocol {
         
     }
     
-    func reloadTable(at: [IndexPath], with: UITableView.RowAnimation) {
+    func deleteRows(at: [IndexPath], with: UITableView.RowAnimation) {
         tableView.deleteRows(at: at, with: with)
+        tableView.reloadSections(IndexSet(integer: 1), with: .fade)
     }
 
 }

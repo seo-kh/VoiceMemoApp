@@ -14,7 +14,7 @@ protocol VoiceMemoFolderProtocol {
     func pushRecordView(viewController: UIViewController)
     func didFolderButtonAction()
     func didTextChangedAction(_ text: String?)
-    func reloadTable(at: [IndexPath], with: UITableView.RowAnimation)
+    func deleteRows(at: [IndexPath], with: UITableView.RowAnimation)
 }
 
 protocol VoiceMemoFolderPresenterProtocol: AnyObject {
@@ -88,13 +88,16 @@ extension VoiceMemoFolderPresenter: UITableViewDelegate {
         }
     }
     
+    
+    /// 셀 삭제
+    ///
+    /// - 참고링크 :  [https://nemecek.be/blog/5/how-to-implement-swipe-to-delete-action-with-custom-icon](https://nemecek.be/blog/5/how-to-implement-swipe-to-delete-action-with-custom-icon)
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let memo = myFolders[indexPath.row]
         let delete = UIContextualAction(style: .destructive, title: nil) {[weak self] _, _, completion in
             self?.manager.deleteMemo(memo)
             self?.myFolders = self?.manager.getVoiceMemos() ?? []
-            self?.viewController?.reloadTable(at: [indexPath], with: .fade)
-            
+            self?.viewController?.deleteRows(at: [indexPath], with: .fade)
             completion(true)
         }
         delete.image = UIImage(systemName: "trash")
@@ -142,6 +145,11 @@ extension VoiceMemoFolderPresenter: UITableViewDataSource {
 
         return cell ?? UITableViewCell()
     }
-    
-    
 }
+
+/// # 해야할 일
+///
+/// 1. MY FOLDERS 섹션 헤더가 배열이 비었을 때는 사라지고, 배열이 존재하면 나타나게
+///     - self?.viewController?.deleteRows(at: [indexPath], with: .fade) 로 해결/
+/// 2. Edit button이 배열이 비었을 때는 비활성화, 배열이 존재하면 활성화
+/// 3. Edit mode에서 배열이 비었을 때 자동으로 Edit mode 해제
