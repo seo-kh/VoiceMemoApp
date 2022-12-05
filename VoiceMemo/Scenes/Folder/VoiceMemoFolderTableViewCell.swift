@@ -15,6 +15,7 @@ final class VoiceMemoFolderTableViewCell: UITableViewCell {
     /// Identfier설정
     static let identifier = "VoiceMemoFolderTableViewCell"
     
+    
     /// 커스텀셀 설정하기
     func setup(folder: VoiceMemoFolderModel) {
         // accessoryType, selectionStyle
@@ -28,5 +29,15 @@ final class VoiceMemoFolderTableViewCell: UITableViewCell {
         cell.secondaryText = folder.count
         
         self.contentConfiguration = cell
+        
+        // editing accessory view
+        let menuButton = UIButton(frame: .init(origin: .zero, size: .init(width: 24, height: 24)))
+        menuButton.setImage(UIImage(systemName: "ellipsis.circle"), for: .normal)
+        editingAccessoryView = menuButton
+        
+    }
+    
+    func hide() {
+        
     }
 }

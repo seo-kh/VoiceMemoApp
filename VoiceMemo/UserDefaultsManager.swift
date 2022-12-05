@@ -7,8 +7,17 @@
 
 import Foundation
 
+/// 메모저장을 위한 UserDefaults
+///
+/// - [https://swifty-cody.tistory.com/40](https://swifty-cody.tistory.com/40)
 class UserDefaultsManager {
     private let key = "UserDefaultsManager"
+    
+    func deleteMemo(_ voiceMemo: VoiceMemoFolderModel) {
+        var voiceMemos: [VoiceMemoFolderModel] = getVoiceMemos()
+        voiceMemos = voiceMemos.filter { $0.title != voiceMemo.title }
+        setVoiceMemos(voiceMemos)
+    }
     
     func setVoiceMemos(_ voiceMemos: [VoiceMemoFolderModel]) {
         UserDefaults.standard.set(try? PropertyListEncoder().encode(voiceMemos), forKey: self.key)

@@ -14,6 +14,7 @@ protocol VoiceMemoFolderProtocol {
     func pushRecordView(viewController: UIViewController)
     func didFolderButtonAction()
     func didTextChangedAction(_ text: String?)
+    func reloadTable(at: [IndexPath], with: UITableView.RowAnimation)
 }
 
 protocol VoiceMemoFolderPresenterProtocol: AnyObject {
@@ -79,6 +80,38 @@ extension VoiceMemoFolderPresenter: UITableViewDelegate {
         default: return myFolders.isEmpty ? "" : "My Folders"
         }
     }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        switch indexPath.section {
+        case 0: return false
+        default: return true
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let memo = myFolders[indexPath.row]
+        let delete = UIContextualAction(style: .destructive, title: nil) {[weak self] _, _, completion in
+            self?.manager.deleteMemo(memo)
+            self?.myFolders = self?.manager.getVoiceMemos() ?? []
+            self?.viewController?.reloadTable(at: [indexPath], with: .fade)
+            
+            completion(true)
+        }
+        delete.image = UIImage(systemName: "trash")
+        let config = UISwipeActionsConfiguration(actions: [delete])
+        return config
+    }
+    
+    
+    /// cell 이동하기
+    ///
+    /// - [https://furang-note.tistory.com/31](https://furang-note.tistory.com/31)
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let moveCell = self.myFolders[sourceIndexPath.row]
+        self.myFolders.remove(at: sourceIndexPath.row)
+        self.myFolders.insert(moveCell, at: destinationIndexPath.row)
+        manager.setVoiceMemos(myFolders)
+    }
 }
 
 extension VoiceMemoFolderPresenter: UITableViewDataSource {
@@ -106,6 +139,7 @@ extension VoiceMemoFolderPresenter: UITableViewDataSource {
             let folder = myFolders[indexPath.row]
             cell?.setup(folder: folder)
         }
+
         return cell ?? UITableViewCell()
     }
     

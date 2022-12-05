@@ -76,6 +76,10 @@ extension VoiceMemoFolderViewController: VoiceMemoFolderProtocol {
     }
     
     func didRightBarButtonAction() {
+        isEditing.toggle()
+        tableView.setEditing(isEditing, animated: true)
+        navigationItem.setRightBarButton(.init(barButtonSystemItem: isEditing ? .done : .edit, target: self, action: #selector(didRightBarButtonTapped)), animated: true)
+
     }
     
     /// 폴더 생성 액션
@@ -113,6 +117,10 @@ extension VoiceMemoFolderViewController: VoiceMemoFolderProtocol {
     func didTextChangedAction(_ text: String?) {
         alert?.actions.last?.isEnabled = !(text?.isEmpty ?? true)
         
+    }
+    
+    func reloadTable(at: [IndexPath], with: UITableView.RowAnimation) {
+        tableView.deleteRows(at: at, with: with)
     }
 
 }
