@@ -41,6 +41,7 @@ final class VoiceMemoFolderPresenter: NSObject {
     init(viewController: VoiceMemoFolderProtocol) {
         self.viewController = viewController
         self.myFolders = manager.getVoiceMemos()
+        delegate?.isFolderExist(myFolders.isEmpty)
     }
     
     func viewDidLoad() {

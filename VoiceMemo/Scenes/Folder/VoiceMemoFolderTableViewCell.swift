@@ -35,9 +35,18 @@ final class VoiceMemoFolderTableViewCell: UITableViewCell {
         menuButton.setImage(UIImage(systemName: "ellipsis.circle"), for: .normal)
         editingAccessoryView = menuButton
         
+        /// menu button: [https://medium.nextlevelswift.com/creating-a-native-popup-menu-over-a-uibutton-or-uinavigationbar-645edf0329c4](https://medium.nextlevelswift.com/creating-a-native-popup-menu-over-a-uibutton-or-uinavigationbar-645edf0329c4)
+        menuButton.showsMenuAsPrimaryAction = true
+        menuButton.menu = menu()
     }
     
-    func hide() {
+    private func menu() -> UIMenu {
+        let rename = UIAction(title: "Rename", image: UIImage(systemName: "pencil")) {[weak self] (action: UIAction) in
+                    }
         
+        let delete = UIAction(title: "Delete",image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] (action: UIAction) in
+        }
+        
+        return UIMenu(title: "", options: .displayInline, children: [rename, delete])
     }
 }

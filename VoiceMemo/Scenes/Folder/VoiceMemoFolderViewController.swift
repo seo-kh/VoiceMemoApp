@@ -46,6 +46,10 @@ final class VoiceMemoFolderViewController: UIViewController {
 extension VoiceMemoFolderViewController: VoiceMemoFolderPresenterProtocol {
     func isFolderExist(_ exist: Bool) {
         navigationItem.rightBarButtonItem?.isEnabled = exist
+        
+        if !exist && isEditing {
+            self.didRightBarButtonAction()
+        }
     }
 }
 
@@ -77,8 +81,13 @@ extension VoiceMemoFolderViewController: VoiceMemoFolderProtocol {
     
     func didRightBarButtonAction() {
         isEditing.toggle()
+        /// tableView의 Edit mode 전환
         tableView.setEditing(isEditing, animated: true)
+        /// RightBarButton의 label 변화
         navigationItem.setRightBarButton(.init(barButtonSystemItem: isEditing ? .done : .edit, target: self, action: #selector(didRightBarButtonTapped)), animated: true)
+        /// 폴더 생성 버튼 사라지게 하기
+        self.folderButtonView.isEnabled = !isEditing
+        self.folderButtonView.isHidden = isEditing
 
     }
     
