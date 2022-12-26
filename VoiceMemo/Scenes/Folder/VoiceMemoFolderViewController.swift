@@ -117,7 +117,35 @@ extension VoiceMemoFolderViewController: VoiceMemoFolderProtocol {
         alert?.addAction(save)
         
         present(alert!, animated: true)
+        
     }
+    
+    func didRenameButtonAction(_ folder: VoiceMemoFolderModel) {
+        alert = UIAlertController(title: "Rename", message: nil, preferredStyle: .alert)
+        alert?.addTextField {[weak self] textField in
+            textField.placeholder = folder.title
+            textField.text = folder.title
+            textField.addTarget(self, action: #selector(self?.didRenamed), for: .editingChanged)
+        }
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel)
+        let save = UIAlertAction(title: "Save", style: .default) {[weak self] _ in
+            guard let textField = self?.alert?.textFields?.first,
+                  let title = textField.text
+            else {
+                return
+            }
+            let newFolder = VoiceMemoFolderModel(systemName: "folder", title: title, count: "0")
+            self?.presenter.updateFolder(oldFolder: folder, newFolder: newFolder)
+            self?.tableView.reloadSections(IndexSet(integer: 1), with: .fade)
+        }
+        
+        alert?.addAction(cancel)
+        save.isEnabled = false
+        alert?.addAction(save)
+        
+        present(alert!, animated: true)
+    }
+
     
     func pushRecordView(viewController: UIViewController) {
         navigationController?.pushViewController(viewController, animated: true)
@@ -126,6 +154,10 @@ extension VoiceMemoFolderViewController: VoiceMemoFolderProtocol {
     func didTextChangedAction(_ text: String?) {
         alert?.actions.last?.isEnabled = !(text?.isEmpty ?? true)
         
+    }
+    
+    func didTextRenamedAction(_ text: String?) {
+        alert?.actions.last?.isEnabled = (text != alert?.textFields?.first?.placeholder) && !(text?.isEmpty ?? true)
     }
     
     func deleteRows(at: [IndexPath], with: UITableView.RowAnimation) {
@@ -146,5 +178,9 @@ private extension VoiceMemoFolderViewController {
     
     @objc func didTextChanged(_ sender: UITextField) {
         presenter.didTextChanged(sender.text)
+    }
+    
+    @objc func didRenamed(_ sender: UITextField) {
+        presenter.didRenamed(sender.text)
     }
 }

@@ -13,7 +13,9 @@ protocol VoiceMemoFolderProtocol {
     func didRightBarButtonAction()
     func pushRecordView(viewController: UIViewController)
     func didFolderButtonAction()
+    func didRenameButtonAction(_ folder: VoiceMemoFolderModel)
     func didTextChangedAction(_ text: String?)
+    func didTextRenamedAction(_ text: String?)
     func deleteRows(at: [IndexPath], with: UITableView.RowAnimation)
 }
 
@@ -63,8 +65,20 @@ final class VoiceMemoFolderPresenter: NSObject {
         self.myFolders = self.manager.getVoiceMemos()
     }
     
+    func updateFolder(oldFolder: VoiceMemoFolderModel , newFolder: VoiceMemoFolderModel) {
+        if let index = myFolders.firstIndex(where: { $0 == oldFolder }) {
+            self.myFolders[index] = newFolder
+            self.manager.setVoiceMemos(myFolders)
+            self.myFolders = self.manager.getVoiceMemos()
+        }
+    }
+    
     func didTextChanged(_ text: String?) {
         viewController?.didTextChangedAction(text)
+    }
+    
+    func didRenamed(_ text: String?) {
+        viewController?.didTextRenamedAction(text)
     }
 }
 
@@ -140,8 +154,23 @@ extension VoiceMemoFolderPresenter: UITableViewDataSource {
             let folder = defaultFolders[indexPath.row]
             cell?.setup(folder: folder)
         default:
-            let folder = myFolders[indexPath.row]
-            cell?.setup(folder: folder)
+            let folder: VoiceMemoFolderModel? = myFolders.isEmpty ? nil : myFolders[indexPath.row]
+            
+            cell?.setup(
+                folder: folder,
+                renameAction: {[weak self] _ in
+                    if let folder = folder {
+                        self?.viewController?.didRenameButtonAction(folder)
+                        
+                    }
+                }, deleteAction: { [weak self] _ in
+                    if let folder = folder {
+                        self?.manager.deleteMemo(folder)
+                        self?.myFolders = self?.manager.getVoiceMemos() ?? []
+                        self?.viewController?.deleteRows(at: [indexPath], with: .fade)
+                    }
+                }
+            )
         }
 
         return cell ?? UITableViewCell()

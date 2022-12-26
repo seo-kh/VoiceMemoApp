@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct VoiceMemoFolderModel: Codable {
+struct VoiceMemoFolderModel: Codable, Equatable {
     let systemName: String
     let title: String
     let count: String

@@ -17,16 +17,22 @@ final class VoiceMemoFolderTableViewCell: UITableViewCell {
     
     
     /// 커스텀셀 설정하기
-    func setup(folder: VoiceMemoFolderModel) {
+    func setup(
+        folder: VoiceMemoFolderModel?,
+        renameAction: ((UIAction)->Void)? = nil,
+        deleteAction: ((UIAction)->Void)? = nil
+    ) {
         // accessoryType, selectionStyle
         accessoryType = .disclosureIndicator
         selectionStyle = .none
         
         // custom data
         var cell = UIListContentConfiguration.valueCell()
-        cell.image = folder.image
-        cell.text = folder.title
-        cell.secondaryText = folder.count
+        if let folder = folder {
+            cell.image = folder.image
+            cell.text = folder.title
+            cell.secondaryText = folder.count
+        }
         
         self.contentConfiguration = cell
         
@@ -36,16 +42,23 @@ final class VoiceMemoFolderTableViewCell: UITableViewCell {
         editingAccessoryView = menuButton
         
         /// menu button: [https://medium.nextlevelswift.com/creating-a-native-popup-menu-over-a-uibutton-or-uinavigationbar-645edf0329c4](https://medium.nextlevelswift.com/creating-a-native-popup-menu-over-a-uibutton-or-uinavigationbar-645edf0329c4)
-        menuButton.showsMenuAsPrimaryAction = true
-        menuButton.menu = menu()
+        if let renameAction = renameAction,
+           let deleteAction = deleteAction {
+            menuButton.showsMenuAsPrimaryAction = true
+            menuButton.menu = menu(
+                renameAction: renameAction,
+                deleteAction: deleteAction
+            )
+        }
     }
     
-    private func menu() -> UIMenu {
-        let rename = UIAction(title: "Rename", image: UIImage(systemName: "pencil")) {[weak self] (action: UIAction) in
-                    }
+    private func menu(
+        renameAction: @escaping (UIAction)->Void,
+        deleteAction: @escaping (UIAction)->Void
+    ) -> UIMenu {
+        let rename = UIAction(title: "Rename", image: UIImage(systemName: "pencil"), handler: renameAction)
         
-        let delete = UIAction(title: "Delete",image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] (action: UIAction) in
-        }
+        let delete = UIAction(title: "Delete",image: UIImage(systemName: "trash"), attributes: .destructive, handler: deleteAction)
         
         return UIMenu(title: "", options: .displayInline, children: [rename, delete])
     }
