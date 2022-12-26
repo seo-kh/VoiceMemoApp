@@ -151,9 +151,11 @@ extension VoiceMemoFolderPresenter: UITableViewDataSource {
         
         switch indexPath.section {
         case 0:
+            /// Edit모드와 관여하지않는 Section
             let folder = defaultFolders[indexPath.row]
             cell?.setup(folder: folder)
         default:
+            /// Edit모드와 관여하는 Section : folder와 renameAction, deleteAction closure가 필요.
             let folder: VoiceMemoFolderModel? = myFolders.isEmpty ? nil : myFolders[indexPath.row]
             
             cell?.setup(
@@ -176,10 +178,3 @@ extension VoiceMemoFolderPresenter: UITableViewDataSource {
         return cell ?? UITableViewCell()
     }
 }
-
-/// # 해야할 일
-///
-/// 1. MY FOLDERS 섹션 헤더가 배열이 비었을 때는 사라지고, 배열이 존재하면 나타나게
-///     - self?.viewController?.deleteRows(at: [indexPath], with: .fade) 로 해결/
-/// 2. Edit button이 배열이 비었을 때는 비활성화, 배열이 존재하면 활성화
-/// 3. Edit mode에서 배열이 비었을 때 자동으로 Edit mode 해제

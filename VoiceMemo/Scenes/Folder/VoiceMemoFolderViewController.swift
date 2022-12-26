@@ -43,6 +43,7 @@ final class VoiceMemoFolderViewController: UIViewController {
     }
 }
 
+// MARK: - VoiceMemoFolderPresenterProtocol
 extension VoiceMemoFolderViewController: VoiceMemoFolderPresenterProtocol {
     func isFolderExist(_ exist: Bool) {
         navigationItem.rightBarButtonItem?.isEnabled = exist
@@ -53,6 +54,7 @@ extension VoiceMemoFolderViewController: VoiceMemoFolderPresenterProtocol {
     }
 }
 
+// MARK: - VoiceMemoFolderProtocol
 extension VoiceMemoFolderViewController: VoiceMemoFolderProtocol {
     func setupNavigation() {
         navigationItem.title = "Voice Memos"

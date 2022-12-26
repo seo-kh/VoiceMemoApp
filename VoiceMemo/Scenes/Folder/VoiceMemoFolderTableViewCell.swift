@@ -38,12 +38,14 @@ final class VoiceMemoFolderTableViewCell: UITableViewCell {
         
         // editing accessory view
         let menuButton = UIButton(frame: .init(origin: .zero, size: .init(width: 24, height: 24)))
-        menuButton.setImage(UIImage(systemName: "ellipsis.circle"), for: .normal)
+        menuButton.setImage(
+            UIImage(systemName: "ellipsis.circle"),
+            for: .normal
+        )
         editingAccessoryView = menuButton
         
         /// menu button: [https://medium.nextlevelswift.com/creating-a-native-popup-menu-over-a-uibutton-or-uinavigationbar-645edf0329c4](https://medium.nextlevelswift.com/creating-a-native-popup-menu-over-a-uibutton-or-uinavigationbar-645edf0329c4)
-        if let renameAction = renameAction,
-           let deleteAction = deleteAction {
+        if let renameAction = renameAction, let deleteAction = deleteAction {
             menuButton.showsMenuAsPrimaryAction = true
             menuButton.menu = menu(
                 renameAction: renameAction,
@@ -52,13 +54,29 @@ final class VoiceMemoFolderTableViewCell: UITableViewCell {
         }
     }
     
+    /// Edit mode 메뉴 버튼
+    ///
+    /// - Parameters:
+    ///   - renameAction: Folder의 Rename 기능 함수, `(UIAction)->Void`
+    ///   - deleteAction: Folder의 Delete 기능 함수, `(UIaction)->Void`
+    /// - Returns: `UIMenu`
     private func menu(
         renameAction: @escaping (UIAction)->Void,
         deleteAction: @escaping (UIAction)->Void
     ) -> UIMenu {
-        let rename = UIAction(title: "Rename", image: UIImage(systemName: "pencil"), handler: renameAction)
         
-        let delete = UIAction(title: "Delete",image: UIImage(systemName: "trash"), attributes: .destructive, handler: deleteAction)
+        let rename = UIAction(
+            title: "Rename",
+            image: UIImage(systemName: "pencil"),
+            handler: renameAction
+        )
+        
+        let delete = UIAction(
+            title: "Delete",
+            image: UIImage(systemName: "trash"),
+            attributes: .destructive,
+            handler: deleteAction
+        )
         
         return UIMenu(title: "", options: .displayInline, children: [rename, delete])
     }
