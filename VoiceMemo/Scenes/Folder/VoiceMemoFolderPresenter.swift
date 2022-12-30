@@ -84,7 +84,14 @@ final class VoiceMemoFolderPresenter: NSObject {
 
 extension VoiceMemoFolderPresenter: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = VoiceMemoRecordViewController()
+        var folder: VoiceMemoFolderModel
+        switch indexPath.section {
+        case 0:
+            folder = defaultFolders[indexPath.row]
+        default:
+            folder = myFolders[indexPath.row]
+        }
+        let vc = VoiceMemoRecordViewController(folder: folder)
         viewController?.pushRecordView(viewController: vc)
     }
     

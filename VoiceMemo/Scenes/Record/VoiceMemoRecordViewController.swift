@@ -9,6 +9,18 @@ import UIKit
 import SnapKit
 
 final class VoiceMemoRecordViewController: UIViewController {
+    let folder: VoiceMemoFolderModel
+    
+    init(folder: VoiceMemoFolderModel) {
+        self.folder = folder
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private lazy var presenter = VoiceMemoRecordPresenter(viewController: self)
     
     private lazy var tableView: UITableView = {
@@ -74,7 +86,7 @@ final class VoiceMemoRecordViewController: UIViewController {
 
 extension VoiceMemoRecordViewController: VoiceMemoRecordProtocol {
     func setupNavigation() {
-        title = "All Recordings"
+        title = folder.title
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.rightBarButtonItem = rightBarButton
         navigationItem.searchController = searchController
@@ -111,8 +123,6 @@ extension VoiceMemoRecordViewController: VoiceMemoRecordProtocol {
         infoLabel.snp.makeConstraints {
             $0.centerX.centerY.equalToSuperview()
         }
-        
-        infoLabel.isHidden = true
     }
     
     func didRightBarButtonAction() {
