@@ -84,8 +84,7 @@ final class VoiceMemoFolderPresenter: NSObject {
 
 extension VoiceMemoFolderPresenter: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = UIViewController()
-        vc.view.backgroundColor = .cyan
+        let vc = VoiceMemoRecordViewController()
         viewController?.pushRecordView(viewController: vc)
     }
     
